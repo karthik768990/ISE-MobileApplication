@@ -85,3 +85,24 @@ Follow this checklist during manual runs to ensure split and logging validity:
 - [ ] On the setup screen, tap the download icon in the top right.
 - [ ] Verify a SnackBar displays the local export path.
 - [ ] Open the generated `.csv` or `.json` file and verify all answers, correct flags, screen times, and language codes are recorded accurately.
+
+---
+
+## 5. Core Value-Bringing Features
+
+The following features represent the most significant additions to the patient layer, driving direct value in usability, reliability, and accessibility:
+
+1. **Voice Support (Text-to-Speech)**
+   - Utilizes `flutter_tts` to read out medication instructions, making the application accessible to users with visual impairments or lower literacy levels.
+
+2. **Repetition of Explanation**
+   - An interactive, patient-centric design where the system repeats and reinforces complex medical explanations if the user indicates they do not fully understand the material.
+
+3. **Robust Test Suite**
+   - Comprehensive automated testing (UI, accessibility, and performance) ensuring high stability and a regression-free environment across future updates.
+
+4. **Low Network Support**
+   - Engineered with resilient data caching mechanisms to ensure that the patient experience remains uninterrupted even in environments with poor or fluctuating internet connectivity.
+
+5. **No-Hang Features (Performance Optimization)**
+   - Background processing and strict state management ensure the main UI thread is never blocked, preventing UI freezes (hangs) during complex operations or media playback, verified continuously by the `performance_tracker`.

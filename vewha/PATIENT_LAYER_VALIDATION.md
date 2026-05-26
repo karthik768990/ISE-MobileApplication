@@ -1,0 +1,85 @@
+# VEWHA — Patient Layer Manual Validation Protocol
+
+This file serves as the official operational guide and checklist for verifying and running the patient-facing layer of the **VEWHA** mobile health app.
+
+---
+
+## 1. Quick Launch Commands
+
+To launch and run the app under different modes, execute the following commands in the `vewha/` directory:
+
+### Clinician-Facing Mode (Original App)
+Launches the original, clinician Welcome and login flows (fully retaining Firebase authentication dependencies and DB providers):
+```bash
+flutter run
+```
+
+### Patient-Facing Evaluation Mode (Enhanced Layer)
+Launches the progressive prescription list and enrollment screen directly, completely bypassing any auth/login gates and welcome screen delays:
+```bash
+flutter run --dart-define=MODE=patient
+```
+
+---
+
+## 2. Automated Test Execution Commands
+
+To execute the entire automated validation suite covering isolated routing, components widgets, static data constraints, local logging format, and non-regression checks, run:
+
+```bash
+# Execute full test suite
+flutter test test/patient_view/
+
+# Run static analyzer
+flutter analyze lib/
+```
+
+### Expected Output
+All tests must execute successfully with zero failures and warnings:
+```
+00:02 +8: All tests passed!
+```
+
+---
+
+## 3. Architecture Isolation Checklist
+
+The patient-facing layer is built as a fully isolated, additive clinical package. Verify that no file in `lib/screens/patient_view/` or `lib/components/patient_view/` imports any of the following clinician/DB services:
+
+- [x] No `package:firebase_auth/firebase_auth.dart` imports.
+- [x] No `package:cloud_firestore/cloud_firestore.dart` imports.
+- [x] No clinician Screens imports (`lib/Screens/Home/` or `lib/Screens/Welcome/`).
+- [x] No clinician Service providers (`lib/Services/auth.dart` or `lib/Services/database.dart`).
+- [x] No chatbot imports (`lib/chatbot/`).
+
+*This is verified programmatically on every run of `flutter test test/patient_view/isolation_test.dart`.*
+
+---
+
+## 4. Manual Verification Checklist
+
+Follow this checklist during manual runs to ensure split and logging validity:
+
+### Step 1: Enroll Participant
+- [ ] Run with flag `MODE=patient`.
+- [ ] Verify setup screen renders with text input.
+- [ ] Input participant ID (e.g. `P05`) and select **Condition A**. Click **Launch**.
+
+### Step 2: Test Condition A (Enhanced UI)
+- [ ] Verify that Medication 1 renders.
+- [ ] Verify that the stepper dot indicator highlights step 1.
+- [ ] Verify that the anatomy diagram is loaded and displays a highlight in the upper abdomen.
+- [ ] Tap the **Language Toggle** (English/తెలుగు) and verify the text fields immediately change languages.
+- [ ] Tap **Listen** and verify audio voice speaks clearly.
+- [ ] Tap **Answer questions**, submit answers to the 5 quiz questions, and verify that the app returns cleanly to the stepper list.
+
+### Step 3: Test Condition B (Plain Clinical UI)
+- [ ] Exit the session, start a new one, and select **Condition B**. Click **Launch**.
+- [ ] Verify that no anatomy diagrams or listen buttons are rendered.
+- [ ] Verify that a simple clinical table is presented containing fields `Medicine`, `Dose`, `Route`, `Frequency`, and `Purpose`.
+- [ ] Complete the quiz questions.
+
+### Step 4: Verify Session Log Export
+- [ ] On the setup screen, tap the download icon in the top right.
+- [ ] Verify a SnackBar displays the local export path.
+- [ ] Open the generated `.csv` or `.json` file and verify all answers, correct flags, screen times, and language codes are recorded accurately.

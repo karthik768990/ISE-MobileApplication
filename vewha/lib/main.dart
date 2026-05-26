@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:Vewha/Screens/Welcome/splash_screen.dart';
 import 'package:Vewha/Components/constants.dart';
+import 'package:Vewha/screens/patient_view/patient_entry_screen.dart';
 // Local Notifications
 import 'package:timezone/data/latest_all.dart' as tz;
 // Import Calendar Page
@@ -66,9 +67,10 @@ class MyApp extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
           )),
-      // home: const WelcomeScreen(), // using current spash screen crashes
-      home:
-          const SplashScreen(), // need to modify to keep login pages on top of HOME if user creds not found locally
+      home: (const String.fromEnvironment('MODE') == 'patient' ||
+              const bool.fromEnvironment('patient_mode', defaultValue: false))
+          ? const PatientEntryScreen()
+          : const SplashScreen(),
     );
   }
 }

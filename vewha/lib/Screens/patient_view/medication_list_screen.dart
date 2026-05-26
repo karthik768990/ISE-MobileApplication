@@ -6,7 +6,13 @@ import 'plain_text_condition_screen.dart';
 
 class MedicationListScreen extends StatefulWidget {
   final String condition; // 'A' or 'B'
-  const MedicationListScreen({super.key, required this.condition});
+  final String language;  // 'en' or 'te'
+
+  const MedicationListScreen({
+    super.key,
+    required this.condition,
+    required this.language,
+  });
 
   @override
   State<MedicationListScreen> createState() => _MedicationListScreenState();
@@ -24,26 +30,41 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
     final drug = studyDrugs[_current];
     if (widget.condition == 'A') {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => MedicationDetailScreen(drug: drug)));
+        builder: (_) => MedicationDetailScreen(
+          drug: drug,
+          initialLanguage: widget.language,
+        ),
+      ));
     } else {
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => PlainTextConditionScreen(drug: drug)));
+        builder: (_) => PlainTextConditionScreen(
+          drug: drug,
+          initialLanguage: widget.language,
+        ),
+      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final drug = studyDrugs[_current];
+    final isTe = widget.language == 'te';
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Medication ${_current + 1} of ${studyDrugs.length}',
-          style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold)),
+        title: Text(
+          isTe
+              ? 'మందు ${_current + 1} / ${studyDrugs.length}'
+              : 'Medication ${_current + 1} of ${studyDrugs.length}',
+          style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold, fontSize: 20),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF555555)),
-          onPressed: () => Navigator.of(context).pop()),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -52,35 +73,54 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
             ProgressStepper(
               currentIndex: _current,
               total: studyDrugs.length,
-              onTap: _go),
-            const SizedBox(height: 24),
+              onTap: _go,
+            ),
+            const SizedBox(height: 32),
             Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: const BorderSide(color: Color(0xFFE0E0E0))),
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(color: Color(0xFFE0E0E0), width: 1.5),
+              ),
               child: InkWell(
                 onTap: _openDetail,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(drug.name,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold,
-                            color: Color(0xFF1A1A2E))),
-                      const SizedBox(height: 8),
-                      Text(drug.purpose,
-                        style: const TextStyle(fontSize: 14, color: Color(0xFF555555))),
-                      const SizedBox(height: 16),
-                      const Row(
+                      Text(
+                        isTe ? drug.nameTe : drug.name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A1A2E),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        isTe ? drug.purposeTe : drug.purpose,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                          color: Color(0xFF555555),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text('Tap to view details',
-                            style: TextStyle(fontSize: 13, color: Color(0xFF1D9E75), fontWeight: FontWeight.bold)),
-                          SizedBox(width: 4),
-                          Icon(Icons.arrow_forward, size: 16, color: Color(0xFF1D9E75)),
+                          Text(
+                            isTe ? 'వివరాలను చూడటానికి నొక్కండి' : 'Tap to view details',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF1D9E75),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(Icons.arrow_forward, size: 18, color: Color(0xFF1D9E75)),
                         ],
                       )
                     ],
@@ -89,47 +129,62 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
               ),
             ),
             const Spacer(),
-            Row(children: [
-              if (_current > 0)
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => _go(_current - 1),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: const BorderSide(color: Color(0xFF1D9E75)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            Row(
+              children: [
+                if (_current > 0)
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _go(_current - 1),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        side: const BorderSide(color: Color(0xFF1D9E75), width: 2),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        isTe ? 'వెనక్కి' : 'Previous',
+                        style: const TextStyle(
+                          color: Color(0xFF1D9E75),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                    child: const Text('Previous', style: TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold)),
                   ),
-                ),
-              if (_current > 0) const SizedBox(width: 12),
-              if (_current < studyDrugs.length - 1)
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => _go(_current + 1),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1D9E75),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                if (_current > 0) const SizedBox(width: 16),
+                if (_current < studyDrugs.length - 1)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => _go(_current + 1),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1D9E75),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        isTe ? 'తదుపరి' : 'Next',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
                     ),
-                    child: const Text('Next', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
-                ),
-              if (_current == studyDrugs.length - 1)
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF534AB7),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                if (_current == studyDrugs.length - 1)
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF534AB7),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: Text(
+                        isTe ? 'పూర్తయింది' : 'Done',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
                     ),
-                    child: const Text('Done', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
-                ),
-            ]),
+              ],
+            ),
           ],
         ),
       ),

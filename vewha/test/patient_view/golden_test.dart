@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:Vewha/data/prescriptions.dart';
-import 'package:Vewha/screens/patient_view/patient_entry_screen.dart';
-import 'package:Vewha/screens/patient_view/medication_detail_screen.dart';
-import 'package:Vewha/screens/patient_view/plain_text_condition_screen.dart';
+import 'package:Vewha/Screens/patient_view/patient_entry_screen.dart';
+import 'package:Vewha/Screens/patient_view/medication_detail_screen.dart';
+import 'package:Vewha/Screens/patient_view/plain_text_condition_screen.dart';
 
 class MockPathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {

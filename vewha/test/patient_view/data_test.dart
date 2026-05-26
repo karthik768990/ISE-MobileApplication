@@ -5,18 +5,26 @@ import 'package:Vewha/i18n/strings.dart';
 
 void main() {
   group('Prescription Data & Localization Validation', () {
-    test('Validate all 5 medications exist and are unique', () {
+    test('Validate all 5 medications exist and are unique with bilingual detail fields', () {
       expect(studyDrugs.length, equals(5));
 
       final Set<String> drugIds = {};
       for (final drug in studyDrugs) {
         expect(drug.drugId.isNotEmpty, isTrue);
         expect(drug.name.isNotEmpty, isTrue);
+        expect(drug.nameTe.isNotEmpty, isTrue);
         expect(drug.dose.isNotEmpty, isTrue);
+        expect(drug.doseTe.isNotEmpty, isTrue);
         expect(drug.route.isNotEmpty, isTrue);
+        expect(drug.routeTe.isNotEmpty, isTrue);
         expect(drug.frequency.isNotEmpty, isTrue);
+        expect(drug.frequencyTe.isNotEmpty, isTrue);
         expect(drug.purpose.isNotEmpty, isTrue);
+        expect(drug.purposeTe.isNotEmpty, isTrue);
         expect(drug.plainLanguageKey.isNotEmpty, isTrue);
+        
+        // Assert exactly 6 high-value questions exist per drug
+        expect(drug.questions.length, equals(6));
 
         // Verify ID uniqueness
         expect(drugIds.contains(drug.drugId), isFalse, reason: 'Duplicate drug ID detected: ${drug.drugId}');

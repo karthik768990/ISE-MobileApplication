@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:Vewha/main.dart';
 import 'package:Vewha/Screens/Welcome/splash_screen.dart';
-import 'package:Vewha/screens/patient_view/patient_entry_screen.dart';
-import 'package:Vewha/screens/patient_view/medication_list_screen.dart';
+import 'package:Vewha/Screens/patient_view/patient_entry_screen.dart';
+import 'package:Vewha/Screens/patient_view/medication_list_screen.dart';
 
 void main() {
   group('Routing & Startup Bypass Tests', () {
@@ -37,7 +37,7 @@ void main() {
       expect(find.byType(PatientEntryScreen), findsOneWidget);
       expect(find.text('Study Setup'), findsOneWidget);
       expect(find.text('Participant code'), findsOneWidget);
-      expect(find.text('Study condition'), findsOneWidget);
+      expect(find.text('Select study instructions style'), findsOneWidget);
 
       // Verify that no Login or clinician screen or auth flow is loaded
       expect(find.text('Login'), findsNothing);
@@ -54,7 +54,7 @@ void main() {
       await tester.pump();
 
       // Launch Condition A (default)
-      await tester.tap(find.text('Launch'));
+      await tester.tap(find.text('Launch Study'));
       await tester.pumpAndSettle();
 
       // Verify that we navigated to the MedicationListScreen and are on Medication 1

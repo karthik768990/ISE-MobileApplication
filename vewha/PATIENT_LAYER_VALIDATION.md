@@ -63,21 +63,23 @@ Follow this checklist during manual runs to ensure split and logging validity:
 ### Step 1: Enroll Participant
 - [ ] Run with flag `MODE=patient`.
 - [ ] Verify setup screen renders with text input.
-- [ ] Input participant ID (e.g. `P05`) and select **Condition A**. Click **Launch**.
+- [ ] Toggle the persistent language switcher in the AppBar and verify the entire setup layout translates dynamically.
+- [ ] Input participant ID (e.g. `P05`) and select **Pictures + Voice** (Condition A) or **Basic Text Table** (Condition B). Click **Launch Study**.
 
-### Step 2: Test Condition A (Enhanced UI)
+### Step 2: Test Condition A (Pictures + Voice Guidance)
 - [ ] Verify that Medication 1 renders.
 - [ ] Verify that the stepper dot indicator highlights step 1.
 - [ ] Verify that the anatomy diagram is loaded and displays a highlight in the upper abdomen.
-- [ ] Tap the **Language Toggle** (English/తెలుగు) and verify the text fields immediately change languages.
+- [ ] Tap the **Language Toggle** (English/తెలుగు) and verify the text fields and clinical values immediately change languages.
 - [ ] Tap **Listen** and verify audio voice speaks clearly.
-- [ ] Tap **Answer questions**, submit answers to the 5 quiz questions, and verify that the app returns cleanly to the stepper list.
+- [ ] Tap **Answer questions about this medicine**, submit answers to the 6 high-value quiz questions, and verify that the app returns cleanly to the stepper list.
 
-### Step 3: Test Condition B (Plain Clinical UI)
-- [ ] Exit the session, start a new one, and select **Condition B**. Click **Launch**.
+### Step 3: Test Condition B (Basic Text Instructions)
+- [ ] Exit the session, start a new one, and select **Basic Text Table**. Click **Launch Study**.
 - [ ] Verify that no anatomy diagrams or listen buttons are rendered.
 - [ ] Verify that a simple clinical table is presented containing fields `Medicine`, `Dose`, `Route`, `Frequency`, and `Purpose`.
-- [ ] Complete the quiz questions.
+- [ ] Verify that tapping the Language Toggle changes both labels and clinical details values dynamically into Telugu.
+- [ ] Complete the 6 quiz questions.
 
 ### Step 4: Verify Session Log Export
 - [ ] On the setup screen, tap the download icon in the top right.

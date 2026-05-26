@@ -24,13 +24,13 @@ class MedicationCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(drug.name,
+            Text(language == 'te' ? drug.nameTe : drug.name,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A1A2E))),
             const SizedBox(height: 12),
-            _row(language == 'te' ? 'మోతాదు' : 'Dose', drug.dose),
-            _row(language == 'te' ? 'ఎలా వాడాలి' : 'Route', drug.route),
-            _row(language == 'te' ? 'ఎంత తరచుగా' : 'How often', drug.frequency),
-            _row(language == 'te' ? 'దేనికి వాడతారు' : 'Purpose', drug.purpose),
+            _row(language == 'te' ? 'మోతాదు' : 'Dose', language == 'te' ? drug.doseTe : drug.dose),
+            _row(language == 'te' ? 'ఎలా వాడాలి' : 'Route', language == 'te' ? drug.routeTe : drug.route),
+            _row(language == 'te' ? 'ఎంత తరచుగా' : 'How often', language == 'te' ? drug.frequencyTe : drug.frequency),
+            _row(language == 'te' ? 'దేనికి వాడతారు' : 'Purpose', language == 'te' ? drug.purposeTe : drug.purpose),
           ],
         ),
       ),

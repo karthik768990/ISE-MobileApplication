@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../data/prescriptions.dart';
 
+import '../../logging/performance_tracker.dart';
+
 class AnatomyViewer extends StatelessWidget {
   final BodySystem bodySystem;
   final double height;
@@ -24,6 +26,7 @@ class AnatomyViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PatientModuleRegistry.isSvgInitialized = true;
     return SvgPicture.asset(
       _assetPath,
       height: height,

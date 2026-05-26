@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import '../../logging/performance_tracker.dart';
 
 class AudioNarration extends StatefulWidget {
   final String text;
@@ -24,6 +25,7 @@ class _AudioNarrationState extends State<AudioNarration> {
   @override
   void initState() {
     super.initState();
+    PatientModuleRegistry.isTtsInitialized = true;
     _tts.setCompletionHandler(() {
       if (mounted) setState(() => _isPlaying = false);
       widget.onPlayStateChanged?.call(false);
@@ -52,10 +54,13 @@ class _AudioNarrationState extends State<AudioNarration> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isTelugu = widget.languageCode.startsWith('te');
     return ElevatedButton.icon(
       onPressed: _isPlaying ? _stop : _play,
       icon: Icon(_isPlaying ? Icons.stop : Icons.volume_up),
-      label: Text(_isPlaying ? 'Stop' : 'Listen'),
+      label: Text(_isPlaying 
+        ? (isTelugu ? 'ఆపండి' : 'Stop') 
+        : (isTelugu ? 'వినండి' : 'Listen')),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF1D9E75),
         foregroundColor: Colors.white,

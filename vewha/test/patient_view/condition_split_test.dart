@@ -10,8 +10,8 @@ import 'package:Vewha/data/prescriptions.dart';
 import 'package:Vewha/components/patient_view/anatomy_viewer.dart';
 import 'package:Vewha/components/patient_view/audio_narration.dart';
 import 'package:Vewha/components/patient_view/medication_card.dart';
-import 'package:Vewha/screens/patient_view/medication_detail_screen.dart';
-import 'package:Vewha/screens/patient_view/plain_text_condition_screen.dart';
+import 'package:Vewha/Screens/patient_view/medication_detail_screen.dart';
+import 'package:Vewha/Screens/patient_view/plain_text_condition_screen.dart';
 
 class MockPathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {

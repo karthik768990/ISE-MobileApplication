@@ -13,11 +13,11 @@ import 'package:Vewha/components/patient_view/anatomy_viewer.dart';
 import 'package:Vewha/components/patient_view/audio_narration.dart';
 import 'package:Vewha/components/patient_view/progress_stepper.dart';
 import 'package:Vewha/components/patient_view/medication_card.dart';
-import 'package:Vewha/screens/patient_view/patient_entry_screen.dart';
-import 'package:Vewha/screens/patient_view/medication_list_screen.dart';
-import 'package:Vewha/screens/patient_view/medication_detail_screen.dart';
-import 'package:Vewha/screens/patient_view/plain_text_condition_screen.dart';
-import 'package:Vewha/screens/patient_view/comprehension_screen.dart';
+import 'package:Vewha/Screens/patient_view/patient_entry_screen.dart';
+import 'package:Vewha/Screens/patient_view/medication_list_screen.dart';
+import 'package:Vewha/Screens/patient_view/medication_detail_screen.dart';
+import 'package:Vewha/Screens/patient_view/plain_text_condition_screen.dart';
+import 'package:Vewha/Screens/patient_view/comprehension_screen.dart';
 
 class MockPathProviderPlatform extends PathProviderPlatform
     with MockPlatformInterfaceMixin {
@@ -96,7 +96,7 @@ void main() {
       final drug = studyDrugs[0]; // Metformin
       await tester.pumpWidget(MaterialApp(
         home: Scaffold(
-          body: MedicationCard(drug: drug),
+          body: MedicationCard(drug: drug, language: 'en'),
         ),
       ));
 
@@ -139,22 +139,22 @@ void main() {
 
       expect(find.text('Study Setup'), findsOneWidget);
       expect(find.text('Participant code'), findsOneWidget);
-      expect(find.text('Condition A\n(Enhanced)'), findsOneWidget);
-      expect(find.text('Condition B\n(Plain text)'), findsOneWidget);
+      expect(find.text('Pictures + Voice'), findsOneWidget);
+      expect(find.text('Basic Text Table'), findsOneWidget);
 
       // Toggle Condition B
-      await tester.tap(find.text('Condition B\n(Plain text)'));
+      await tester.tap(find.text('Basic Text Table'));
       await tester.pump();
 
       // Select Launch with blank code shows SnackBar
-      await tester.tap(find.text('Launch'));
+      await tester.tap(find.text('Launch Study'));
       await tester.pump();
       expect(find.text('Please enter a participant code'), findsOneWidget);
     });
 
     testWidgets('MedicationListScreen disclosure list next/previous operations', (WidgetTester tester) async {
       await tester.pumpWidget(const MaterialApp(
-        home: MedicationListScreen(condition: 'A'),
+        home: MedicationListScreen(condition: 'A', language: 'en'),
       ));
 
       // Medication 1 is visible
@@ -174,13 +174,13 @@ void main() {
       setupMockChannels(tester);
       final drug = studyDrugs[1]; // Salbutamol
       await tester.pumpWidget(MaterialApp(
-        home: MedicationDetailScreen(drug: drug),
+        home: MedicationDetailScreen(drug: drug, initialLanguage: 'en'),
       ));
 
       expect(find.byType(AnatomyViewer), findsOneWidget);
       expect(find.byType(AudioNarration), findsOneWidget);
       expect(find.byType(MedicationCard), findsOneWidget);
-      expect(find.text('తెలుగు'), findsOneWidget); // Default switcher button text to go to Telugu
+      expect(find.text('తెలుగు'), findsOneWidget); // Default switcher button text
 
       // Toggle Language to Telugu
       await tester.tap(find.text('తెలుగు'));
@@ -191,7 +191,7 @@ void main() {
     testWidgets('PlainTextConditionScreen renders simple data table', (WidgetTester tester) async {
       final drug = studyDrugs[3]; // Amlodipine
       await tester.pumpWidget(MaterialApp(
-        home: PlainTextConditionScreen(drug: drug),
+        home: PlainTextConditionScreen(drug: drug, initialLanguage: 'en'),
       ));
 
       expect(find.byType(Table), findsOneWidget);
@@ -214,21 +214,21 @@ void main() {
         ),
       ));
 
-      expect(find.text('What is the name of this medicine?'), findsOneWidget);
+      expect(find.text('What problem does this medicine help with?'), findsOneWidget);
       
       // Attempt to submit empty answer
-      await tester.tap(find.text('Submit answer'));
+      await tester.tap(find.text('Submit Answer'));
       await tester.pump();
       expect(find.text('Please enter an answer'), findsOneWidget);
 
       // Submit actual answer
-      await tester.enterText(find.byType(TextField), 'Metformin');
+      await tester.enterText(find.byType(TextField), 'diabetes');
       await tester.pump();
-      await tester.tap(find.text('Submit answer'));
+      await tester.tap(find.text('Submit Answer'));
       await tester.pumpAndSettle();
 
       // Progresses to next question
-      expect(find.text('How much of this medicine do you take?'), findsOneWidget);
+      expect(find.text('When or how often should you take this medicine?'), findsOneWidget);
     });
   });
 }

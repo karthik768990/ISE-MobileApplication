@@ -8,7 +8,13 @@ import 'comprehension_screen.dart';
 
 class MedicationDetailScreen extends StatefulWidget {
   final StudyDrug drug;
-  const MedicationDetailScreen({super.key, required this.drug});
+  final String initialLanguage;
+
+  const MedicationDetailScreen({
+    super.key,
+    required this.drug,
+    this.initialLanguage = 'en',
+  });
 
   @override
   State<MedicationDetailScreen> createState() => _MedicationDetailScreenState();
@@ -17,11 +23,18 @@ class MedicationDetailScreen extends StatefulWidget {
 class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
   String _lang = 'en';
   bool _audioPlayed = false;
-  final DateTime _screenOpenTime = DateTime.now();
+  late final DateTime _screenOpenTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _lang = widget.initialLanguage;
+    _screenOpenTime = DateTime.now();
+  }
 
   PlainLangEntry get _entry =>
-    plainLanguageMap[widget.drug.plainLanguageKey]?[_lang] ??
-    plainLanguageMap[widget.drug.plainLanguageKey]!['en']!;
+      plainLanguageMap[widget.drug.plainLanguageKey]?[_lang] ??
+      plainLanguageMap[widget.drug.plainLanguageKey]!['en']!;
 
   String get _ttsLang => _lang == 'te' ? 'te-IN' : 'en-IN';
 
@@ -33,26 +46,33 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
         timeOnScreenMs: elapsed,
         audioPlayed: _audioPlayed,
         language: _lang,
-      )));
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
+    final isTe = _lang == 'te';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.drug.name,
-          style: const TextStyle(color: Color(0xFF1A1A2E), fontSize: 16, fontWeight: FontWeight.bold)),
+        title: Text(
+          isTe ? widget.drug.nameTe : widget.drug.name,
+          style: const TextStyle(color: Color(0xFF1A1A2E), fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF555555)),
-          onPressed: () => Navigator.of(context).pop()),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         actions: [
           TextButton(
             onPressed: () => setState(() => _lang = _lang == 'en' ? 'te' : 'en'),
-            child: Text(_lang == 'en' ? 'తెలుగు' : 'English',
-              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16)),
+            child: Text(
+              _lang == 'en' ? 'తెలుగు' : 'English',
+              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           )
         ],
       ),
@@ -62,32 +82,39 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Anatomy viewer
-            Center(child: AnatomyViewer(bodySystem: widget.drug.bodySystem, height: 220)),
-            const SizedBox(height: 8),
+            Center(child: AnatomyViewer(bodySystem: widget.drug.bodySystem, height: 240)),
+            const SizedBox(height: 10),
             Center(
-              child: Text(_lang == 'te' ? 'ఇది మీ శరీరంలో ఎక్కడ పని చేస్తుంది' : 'Where this medicine works in your body',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF888888), fontWeight: FontWeight.w500))),
-            const SizedBox(height: 24),
-            // Plain language what it's for
-            _section(_lang == 'te' ? 'ఈ మందు దేనికి వాడతారు' : 'What this medicine is for', _entry.whatItIsFor),
-            const SizedBox(height: 16),
-            _section(_lang == 'te' ? 'ఎలా వాడాలి' : 'How to take it', _entry.howToTake),
-            const SizedBox(height: 20),
-            // Audio button
-            AudioNarration(
-              text: _entry.audioText,
-              languageCode: _ttsLang,
-              onPlayStateChanged: (playing) {
-                if (playing) setState(() => _audioPlayed = true);
-              },
+              child: Text(
+                isTe ? 'ఇది మీ శరీరంలో ఎక్కడ పని చేస్తుంది' : 'Where this medicine works in your body',
+                style: const TextStyle(fontSize: 13, color: Color(0xFF888888), fontWeight: FontWeight.bold),
+              ),
             ),
-            const SizedBox(height: 24),
-            // Clinical summary card
-            Text(_lang == 'te' ? 'క్లినికల్ వివరాలు' : 'Clinical details',
-              style: const TextStyle(fontSize: 13, color: Color(0xFF888888), fontWeight: FontWeight.w500)),
-            const SizedBox(height: 8),
-            MedicationCard(drug: widget.drug, language: _lang),
             const SizedBox(height: 28),
+            // Plain language what it's for
+            _section(isTe ? 'ఈ మందు దేనికి వాడతారు' : 'What this medicine is for', _entry.whatItIsFor),
+            const SizedBox(height: 20),
+            _section(isTe ? 'ఎలా వాడాలి' : 'How to take it', _entry.howToTake),
+            const SizedBox(height: 28),
+            // Audio button
+            Center(
+              child: AudioNarration(
+                text: _entry.audioText,
+                languageCode: _ttsLang,
+                onPlayStateChanged: (playing) {
+                  if (playing) setState(() => _audioPlayed = true);
+                },
+              ),
+            ),
+            const SizedBox(height: 32),
+            // Clinical summary card
+            Text(
+              isTe ? 'క్లినికల్ వివరాలు' : 'Clinical details',
+              style: const TextStyle(fontSize: 14, color: Color(0xFF888888), fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            MedicationCard(drug: widget.drug, language: _lang),
+            const SizedBox(height: 36),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -95,11 +122,14 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF534AB7),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
                 ),
-                child: Text(_lang == 'te' ? 'ప్రశ్నలకు సమాధానం ఇవ్వండి' : 'Answer questions about this medicine',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                child: Text(
+                  isTe ? 'ప్రశ్నలకు సమాధానం ఇవ్వండి' : 'Answer questions about this medicine',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -112,11 +142,15 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold,
-            color: Color(0xFF1D9E75))),
-        const SizedBox(height: 6),
-        Text(content, style: const TextStyle(fontSize: 16, color: Color(0xFF333333),
-            height: 1.6)),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF1D9E75)),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          content,
+          style: const TextStyle(fontSize: 18, color: Color(0xFF333333), height: 1.6),
+        ),
       ],
     );
   }

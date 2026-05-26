@@ -5,14 +5,28 @@ import 'comprehension_screen.dart';
 
 class PlainTextConditionScreen extends StatefulWidget {
   final StudyDrug drug;
-  const PlainTextConditionScreen({super.key, required this.drug});
+  final String initialLanguage;
+
+  const PlainTextConditionScreen({
+    super.key,
+    required this.drug,
+    this.initialLanguage = 'en',
+  });
 
   @override
   State<PlainTextConditionScreen> createState() => _PlainTextConditionScreenState();
 }
 
 class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
-  final DateTime _screenOpenTime = DateTime.now();
+  late final DateTime _screenOpenTime;
+  String _lang = 'en';
+
+  @override
+  void initState() {
+    super.initState();
+    _lang = widget.initialLanguage;
+    _screenOpenTime = DateTime.now();
+  }
 
   void _openComprehension() {
     final elapsed = DateTime.now().difference(_screenOpenTime).inMilliseconds;
@@ -21,22 +35,39 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
         drug: widget.drug,
         timeOnScreenMs: elapsed,
         audioPlayed: false,
-        language: 'en',
-      )));
+        language: _lang,
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     final d = widget.drug;
+    final isTe = _lang == 'te';
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Prescription', style: TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold)),
+        title: Text(
+          isTe ? 'ప్రిస్క్రిప్షన్' : 'Prescription',
+          style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold, fontSize: 20),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Color(0xFF555555)),
-          onPressed: () => Navigator.of(context).pop()),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          // AppBar Language Switcher for perfect Condition B bilingual consistency
+          TextButton(
+            onPressed: () => setState(() => _lang = _lang == 'en' ? 'te' : 'en'),
+            child: Text(
+              _lang == 'en' ? 'తెలుగు' : 'English',
+              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -44,15 +75,15 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Table(
-              border: TableBorder.all(color: const Color(0xFFE0E0E0), borderRadius: BorderRadius.circular(4)),
+              border: TableBorder.all(color: const Color(0xFFE0E0E0), width: 1.5, borderRadius: BorderRadius.circular(8)),
               columnWidths: const {0: FixedColumnWidth(110), 1: FlexColumnWidth()},
               children: [
-                _headerRow(),
-                _dataRow('Medicine', d.name),
-                _dataRow('Dose', d.dose),
-                _dataRow('Route', d.route),
-                _dataRow('Frequency', d.frequency),
-                _dataRow('Purpose', d.purpose),
+                _headerRow(isTe ? 'ఫీల్డ్' : 'Field', isTe ? 'వివరాలు' : 'Details'),
+                _dataRow(isTe ? 'మందు' : 'Medicine', isTe ? d.nameTe : d.name),
+                _dataRow(isTe ? 'మోతాదు' : 'Dose', isTe ? d.doseTe : d.dose),
+                _dataRow(isTe ? 'ఎలా వాడాలి' : 'Route', isTe ? d.routeTe : d.route),
+                _dataRow(isTe ? 'ఎంత తరచుగా' : 'Frequency', isTe ? d.frequencyTe : d.frequency),
+                _dataRow(isTe ? 'దేనికి వాడతారు' : 'Purpose', isTe ? d.purposeTe : d.purpose),
               ],
             ),
             const Spacer(),
@@ -63,10 +94,14 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF534AB7),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 2,
                 ),
-                child: const Text('Answer questions', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                child: Text(
+                  isTe ? 'ప్రశ్నలకు సమాధానం ఇవ్వండి' : 'Answer questions',
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -75,19 +110,37 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
     );
   }
 
-  TableRow _headerRow() => TableRow(
-    decoration: const BoxDecoration(color: Color(0xFF1A1A2E)),
-    children: ['Field', 'Details'].map((h) => Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-      child: Text(h, style: const TextStyle(color: Colors.white,
-          fontWeight: FontWeight.bold, fontSize: 13)))).toList());
+  TableRow _headerRow(String fieldLabel, String detailsLabel) => TableRow(
+        decoration: const BoxDecoration(color: Color(0xFF1A1A2E)),
+        children: [fieldLabel, detailsLabel]
+            .map((h) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  child: Text(
+                    h,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ))
+            .toList(),
+      );
 
-  TableRow _dataRow(String label, String value) => TableRow(
-    children: [
-      Padding(padding: const EdgeInsets.all(12),
-        child: Text(label, style: const TextStyle(fontSize: 13,
-            color: Color(0xFF555555), fontWeight: FontWeight.w600))),
-      Padding(padding: const EdgeInsets.all(12),
-        child: Text(value, style: const TextStyle(fontSize: 13, color: Color(0xFF333333)))),
-    ]);
+  TableRow _dataRow(String label, String value) => TableRow(children: [
+        Padding(
+          padding: const EdgeInsets.all(14),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 14, color: Color(0xFF555555), fontWeight: FontWeight.bold),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(14),
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 14, color: Color(0xFF333333), height: 1.4),
+          ),
+        ),
+      ]);
 }

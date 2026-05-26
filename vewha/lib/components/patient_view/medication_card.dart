@@ -13,6 +13,38 @@ class MedicationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String name = drug.name;
+    String dose = drug.dose;
+    String route = drug.route;
+    String freq = drug.frequency;
+    String purpose = drug.purpose;
+    String lDose = 'Dose';
+    String lRoute = 'Route';
+    String lFreq = 'How often';
+    String lPurp = 'Purpose';
+
+    if (language == 'te') {
+      name = drug.nameTe;
+      dose = drug.doseTe;
+      route = drug.routeTe;
+      freq = drug.frequencyTe;
+      purpose = drug.purposeTe;
+      lDose = 'మోతాదు';
+      lRoute = 'ఎలా వాడాలి';
+      lFreq = 'ఎంత తరచుగా';
+      lPurp = 'దేనికి వాడతారు';
+    } else if (language == 'hi') {
+      name = drug.nameHi;
+      dose = drug.doseHi;
+      route = drug.routeHi;
+      freq = drug.frequencyHi;
+      purpose = drug.purposeHi;
+      lDose = 'खुराक';
+      lRoute = 'उपयोग का तरीका';
+      lFreq = 'कितनी बार';
+      lPurp = 'उद्देश्य';
+    }
+
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -24,13 +56,13 @@ class MedicationCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(language == 'te' ? drug.nameTe : drug.name,
+            Text(name,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A1A2E))),
             const SizedBox(height: 12),
-            _row(language == 'te' ? 'మోతాదు' : 'Dose', language == 'te' ? drug.doseTe : drug.dose),
-            _row(language == 'te' ? 'ఎలా వాడాలి' : 'Route', language == 'te' ? drug.routeTe : drug.route),
-            _row(language == 'te' ? 'ఎంత తరచుగా' : 'How often', language == 'te' ? drug.frequencyTe : drug.frequency),
-            _row(language == 'te' ? 'దేనికి వాడతారు' : 'Purpose', language == 'te' ? drug.purposeTe : drug.purpose),
+            _row(lDose, dose),
+            _row(lRoute, route),
+            _row(lFreq, freq),
+            _row(lPurp, purpose),
           ],
         ),
       ),

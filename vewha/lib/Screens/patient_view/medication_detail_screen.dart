@@ -25,6 +25,12 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
   bool _audioPlayed = false;
   late final DateTime _screenOpenTime;
 
+  String _t(String en, String te, String hi) {
+    if (_lang == 'hi') return hi;
+    if (_lang == 'te') return te;
+    return en;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,7 +42,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
       plainLanguageMap[widget.drug.plainLanguageKey]?[_lang] ??
       plainLanguageMap[widget.drug.plainLanguageKey]!['en']!;
 
-  String get _ttsLang => _lang == 'te' ? 'te-IN' : 'en-IN';
+  String get _ttsLang => _lang == 'te' ? 'te-IN' : (_lang == 'hi' ? 'hi-IN' : 'en-IN');
 
   void _openComprehension() {
     final elapsed = DateTime.now().difference(_screenOpenTime).inMilliseconds;
@@ -46,6 +52,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
         timeOnScreenMs: elapsed,
         audioPlayed: _audioPlayed,
         language: _lang,
+        showVisuals: true,
       ),
     ));
   }
@@ -57,7 +64,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          isTe ? widget.drug.nameTe : widget.drug.name,
+          _t(widget.drug.name, widget.drug.nameTe, widget.drug.nameHi),
           style: const TextStyle(color: Color(0xFF1A1A2E), fontSize: 18, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
@@ -67,13 +74,23 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          TextButton(
-            onPressed: () => setState(() => _lang = _lang == 'en' ? 'te' : 'en'),
-            child: Text(
-              _lang == 'en' ? 'తెలుగు' : 'English',
-              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+          DropdownButton<String>(
+            value: _lang,
+            underline: const SizedBox(),
+            icon: const Icon(Icons.language, color: Color(0xFF1D9E75)),
+            style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() => _lang = newValue);
+              }
+            },
+            items: const [
+              DropdownMenuItem(value: 'en', child: Text('English')),
+              DropdownMenuItem(value: 'te', child: Text('తెలుగు')),
+              DropdownMenuItem(value: 'hi', child: Text('हिन्दी')),
+            ],
+          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -86,15 +103,15 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
             const SizedBox(height: 10),
             Center(
               child: Text(
-                isTe ? 'ఇది మీ శరీరంలో ఎక్కడ పని చేస్తుంది' : 'Where this medicine works in your body',
+                _t('Where this medicine works in your body', 'ఇది మీ శరీరంలో ఎక్కడ పని చేస్తుంది', 'यह दवा आपके शरीर में कहाँ काम करती है'),
                 style: const TextStyle(fontSize: 13, color: Color(0xFF888888), fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 28),
             // Plain language what it's for
-            _section(isTe ? 'ఈ మందు దేనికి వాడతారు' : 'What this medicine is for', _entry.whatItIsFor),
+            _section(_t('What this medicine is for', 'ఈ మందు దేనికి వాడతారు', 'यह दवा किसलिए है'), _entry.whatItIsFor),
             const SizedBox(height: 20),
-            _section(isTe ? 'ఎలా వాడాలి' : 'How to take it', _entry.howToTake),
+            _section(_t('How to take it', 'ఎలా వాడాలి', 'इसे कैसे लेना है'), _entry.howToTake),
             const SizedBox(height: 28),
             // Audio button
             Center(
@@ -109,7 +126,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
             const SizedBox(height: 32),
             // Clinical summary card
             Text(
-              isTe ? 'క్లినికల్ వివరాలు' : 'Clinical details',
+              _t('Clinical details', 'క్లినికల్ వివరాలు', 'नैदानिक विवरण'),
               style: const TextStyle(fontSize: 14, color: Color(0xFF888888), fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
@@ -127,7 +144,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
                   elevation: 2,
                 ),
                 child: Text(
-                  isTe ? 'ప్రశ్నలకు సమాధానం ఇవ్వండి' : 'Answer questions about this medicine',
+                  _t('Answer questions about this medicine', 'ప్రశ్నలకు సమాధానం ఇవ్వండి', 'इस दवा के बारे में सवालों के जवाब दें'),
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),

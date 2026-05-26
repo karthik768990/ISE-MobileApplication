@@ -15,6 +15,12 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
   String _condition = 'A';
   String _lang = 'en';
 
+  String _t(String en, String te, String hi) {
+    if (_lang == 'hi') return hi;
+    if (_lang == 'te') return te;
+    return en;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -27,9 +33,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _lang == 'en'
-                ? 'Please enter a participant code'
-                : 'దయచేసి పాల్గొనేవారి కోడ్‌ను నమోదు చేయండి',
+            _t('Please enter a participant code', 'దయచేసి పాల్గొనేవారి కోడ్‌ను నమోదు చేయండి', 'कृपया प्रतिभागी कोड दर्ज करें'),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.redAccent,
@@ -52,7 +56,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            _lang == 'en' ? 'Exported to: $path' : 'ఎగుమతి చేయబడింది: $path',
+            _t('Exported to: $path', 'ఎగుమతి చేయబడింది: $path', 'निर्यात किया गया: $path'),
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           backgroundColor: const Color(0xFF1D9E75),
@@ -69,28 +73,36 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isEn = _lang == 'en';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          isEn ? 'Study Setup' : 'స్టడీ సెటప్',
+          _t('Study Setup', 'స్టడీ సెటప్', 'अध्ययन सेटअप'),
           style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold, fontSize: 20),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         actions: [
-          // Language switcher in App Bar for total consistency
-          TextButton(
-            onPressed: () => setState(() => _lang = _lang == 'en' ? 'te' : 'en'),
-            child: Text(
-              isEn ? 'తెలుగు' : 'English',
-              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
-            ),
+          DropdownButton<String>(
+            value: _lang,
+            underline: const SizedBox(),
+            icon: const Icon(Icons.language, color: Color(0xFF1D9E75)),
+            style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() => _lang = newValue);
+              }
+            },
+            items: const [
+              DropdownMenuItem(value: 'en', child: Text('English')),
+              DropdownMenuItem(value: 'te', child: Text('తెలుగు')),
+              DropdownMenuItem(value: 'hi', child: Text('हिन्दी')),
+            ],
           ),
+          const SizedBox(width: 8),
           IconButton(
             icon: const Icon(Icons.download, color: Color(0xFF888888)),
-            tooltip: isEn ? 'Export study data' : 'స్టడీ డేటా ఎగుమతి',
+            tooltip: _t('Export study data', 'స్టడీ డేటా ఎగుమతి', 'अध्ययन डेटा निर्यात करें'),
             onPressed: _export,
           ),
           const SizedBox(width: 8),
@@ -103,7 +115,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isEn ? 'Participant code' : 'పాల్గొనేవారి కోడ్',
+                _t('Participant code', 'పాల్గొనేవారి కోడ్', 'प्रतिभागी कोड'),
                 style: const TextStyle(fontSize: 16, color: Color(0xFF555555), fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
@@ -111,7 +123,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
                 controller: _codeController,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
-                  hintText: isEn ? 'e.g. P01' : 'ఉదా: P01',
+                  hintText: _t('e.g. P01', 'ఉదా: P01', 'उदा: P01'),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                   focusedBorder: OutlineInputBorder(
@@ -122,7 +134,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
               ),
               const SizedBox(height: 32),
               Text(
-                isEn ? 'Select study instructions style' : 'సూచనల శైలిని ఎంచుకోండి',
+                _t('Select study instructions style', 'సూచనల శైలిని ఎంచుకోండి', 'अध्ययन निर्देश शैली चुनें'),
                 style: const TextStyle(fontSize: 16, color: Color(0xFF555555), fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 14),
@@ -130,10 +142,8 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
                 children: [
                   _conditionButton(
                     'A',
-                    isEn ? 'Pictures + Voice' : 'చిత్రాలు + వాయిస్',
-                    isEn
-                        ? 'Uses body drawings, plain words, & speaks out loud.'
-                        : 'శరీర పటాలు, సరళమైన భాష మరియు వాయిస్ సహాయాన్ని ఉపయోగిస్తుంది.',
+                    _t('Pictures + Voice', 'చిత్రాలు + వాయిస్', 'चित्र + आवाज़'),
+                    _t('Uses body drawings, plain words, & speaks out loud.', 'శరీర పటాలు, సరళమైన భాష మరియు వాయిస్ సహాయాన్ని ఉపయోగిస్తుంది.', 'शरीर के चित्र, सरल शब्द और आवाज़ का उपयोग करता है।'),
                     Icons.image,
                     Icons.volume_up,
                     const Color(0xFF1D9E75),
@@ -142,10 +152,8 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
                   const SizedBox(width: 16),
                   _conditionButton(
                     'B',
-                    isEn ? 'Basic Text Table' : 'సాధారణ టెక్స్ట్ పట్టిక',
-                    isEn
-                        ? 'Uses a simple clinical text table only.'
-                        : 'కేవలం సాధారణ క్లినికల్ టెక్స్ట్ పట్టికను మాత్రమే ఉపయోగిస్తుంది.',
+                    _t('Basic Text Table', 'సాధారణ టెక్స్ట్ పట్టిక', 'सामान्य पाठ तालिका'),
+                    _t('Uses a simple clinical text table only.', 'కేవలం సాధారణ క్లినికల్ టెక్స్ట్ పట్టికను మాత్రమే ఉపయోగిస్తుంది.', 'केवल एक सरल नैदानिक पाठ तालिका का उपयोग करता है।'),
                     Icons.description,
                     Icons.table_chart,
                     const Color(0xFF455A64),
@@ -166,7 +174,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
                     elevation: 2,
                   ),
                   child: Text(
-                    isEn ? 'Launch Study' : 'స్టడీ ప్రారంభించు',
+                    _t('Launch Study', 'స్టడీ ప్రారంభించు', 'अध्ययन शुरू करें'),
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -50,7 +50,7 @@ void main() {
   }
 
   group('UX Accessibility & Conditional Module Loading Tests', () {
-    testWidgets('Bilingual Language Switcher translates setup screen', (WidgetTester tester) async {
+    testWidgets('Trilingual Language Switcher translates setup screen', (WidgetTester tester) async {
       await tester.pumpWidget(const MaterialApp(
         home: PatientEntryScreen(),
       ));
@@ -59,14 +59,16 @@ void main() {
       expect(find.text('Study Setup'), findsOneWidget);
       expect(find.text('Launch Study'), findsOneWidget);
 
-      // Tap Telugu switcher button
-      await tester.tap(find.text('తెలుగు'));
-      await tester.pump();
+      // Tap Dropdown and select Hindi
+      await tester.tap(find.text('English'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('हिन्दी').last);
+      await tester.pumpAndSettle();
 
-      // Verify Telugu UI completeness
-      expect(find.text('స్టడీ సెటప్'), findsOneWidget);
-      expect(find.text('స్టడీ ప్రారంభించు'), findsOneWidget);
-      expect(find.text('చిత్రాలు + వాయిస్'), findsOneWidget);
+      // Verify Hindi UI completeness
+      expect(find.text('अध्ययन सेटअप'), findsOneWidget);
+      expect(find.text('अध्ययन शुरू करें'), findsOneWidget);
+      expect(find.text('चित्र + आवाज़'), findsOneWidget); // Changed to match actual code 'चित्र + आवाज़'
     });
 
     testWidgets('Accessibility preview cards for Condition A vs B render with visual icons', (WidgetTester tester) async {
@@ -74,7 +76,6 @@ void main() {
         home: PatientEntryScreen(),
       ));
 
-      // Verifies custom layout icons are visible for low-literacy users
       expect(find.byIcon(Icons.image), findsOneWidget);
       expect(find.byIcon(Icons.volume_up), findsOneWidget);
       expect(find.byIcon(Icons.description), findsOneWidget);
@@ -85,18 +86,16 @@ void main() {
       setupMockChannels(tester);
       PatientModuleRegistry.reset();
 
-      // Confirm both tracking flags are strictly false initially
       expect(PatientModuleRegistry.isTtsInitialized, isFalse);
       expect(PatientModuleRegistry.isSvgInitialized, isFalse);
 
-      final drug = studyDrugs[0]; // Metformin
+      final drug = studyDrugs[0]; 
 
-      // Build PlainTextConditionScreen (Condition B)
       await tester.pumpWidget(MaterialApp(
         home: PlainTextConditionScreen(drug: drug),
       ));
+      await tester.pumpAndSettle(); // Condition B has no infinite animations
 
-      // Assert that enhanced modules were NEVER initialized
       expect(PatientModuleRegistry.isTtsInitialized, isFalse);
       expect(PatientModuleRegistry.isSvgInitialized, isFalse);
     });
@@ -105,18 +104,18 @@ void main() {
       setupMockChannels(tester);
       PatientModuleRegistry.reset();
 
-      // Confirm flags are false
       expect(PatientModuleRegistry.isTtsInitialized, isFalse);
       expect(PatientModuleRegistry.isSvgInitialized, isFalse);
 
-      final drug = studyDrugs[0]; // Metformin
+      final drug = studyDrugs[0]; 
 
-      // Build MedicationDetailScreen (Condition A)
       await tester.pumpWidget(MaterialApp(
         home: MedicationDetailScreen(drug: drug),
       ));
+      
+      // Use pump instead of pumpAndSettle due to AnatomyViewer infinite pulsing animation
+      await tester.pump(const Duration(milliseconds: 50));
 
-      // Assert that both modules have initialized programmatically
       expect(PatientModuleRegistry.isTtsInitialized, isTrue);
       expect(PatientModuleRegistry.isSvgInitialized, isTrue);
     });

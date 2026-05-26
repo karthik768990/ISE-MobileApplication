@@ -21,6 +21,12 @@ class MedicationListScreen extends StatefulWidget {
 class _MedicationListScreenState extends State<MedicationListScreen> {
   int _current = 0;
 
+  String _t(String en, String te, String hi) {
+    if (widget.language == 'hi') return hi;
+    if (widget.language == 'te') return te;
+    return en;
+  }
+
   void _go(int index) {
     if (index < 0 || index >= studyDrugs.length) return;
     setState(() => _current = index);
@@ -54,9 +60,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          isTe
-              ? 'మందు ${_current + 1} / ${studyDrugs.length}'
-              : 'Medication ${_current + 1} of ${studyDrugs.length}',
+          _t('Medication ${_current + 1} of ${studyDrugs.length}', 'మందు ${_current + 1} / ${studyDrugs.length}', 'दवा ${_current + 1} / ${studyDrugs.length}'),
           style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold, fontSize: 20),
         ),
         backgroundColor: Colors.white,
@@ -91,7 +95,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        isTe ? drug.nameTe : drug.name,
+                        _t(drug.name, drug.nameTe, drug.nameHi),
                         style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
@@ -100,7 +104,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        isTe ? drug.purposeTe : drug.purpose,
+                        _t(drug.purpose, drug.purposeTe, drug.purposeHi),
                         style: const TextStyle(
                           fontSize: 16,
                           height: 1.5,
@@ -112,7 +116,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            isTe ? 'వివరాలను చూడటానికి నొక్కండి' : 'Tap to view details',
+                            _t('Tap to view details', 'వివరాలను చూడటానికి నొక్కండి', 'विवरण देखने के लिए टैप करें'),
                             style: const TextStyle(
                               fontSize: 14,
                               color: Color(0xFF1D9E75),
@@ -141,7 +145,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Text(
-                        isTe ? 'వెనక్కి' : 'Previous',
+                        _t('Previous', 'వెనక్కి', 'पिछला'),
                         style: const TextStyle(
                           color: Color(0xFF1D9E75),
                           fontWeight: FontWeight.bold,
@@ -162,7 +166,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Text(
-                        isTe ? 'తదుపరి' : 'Next',
+                        _t('Next', 'తదుపరి', 'अगला'),
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),
@@ -178,7 +182,7 @@ class _MedicationListScreenState extends State<MedicationListScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       child: Text(
-                        isTe ? 'పూర్తయింది' : 'Done',
+                        _t('Done', 'పూర్తయింది', 'हो गया'),
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),

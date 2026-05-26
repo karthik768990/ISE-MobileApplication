@@ -54,13 +54,20 @@ class _AudioNarrationState extends State<AudioNarration> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isTelugu = widget.languageCode.startsWith('te');
+    String listenText = 'Listen';
+    String stopText = 'Stop';
+    if (widget.languageCode.startsWith('te')) {
+      listenText = 'వినండి';
+      stopText = 'ఆపండి';
+    } else if (widget.languageCode.startsWith('hi')) {
+      listenText = 'सुनें';
+      stopText = 'रुकें';
+    }
+
     return ElevatedButton.icon(
       onPressed: _isPlaying ? _stop : _play,
       icon: Icon(_isPlaying ? Icons.stop : Icons.volume_up),
-      label: Text(_isPlaying 
-        ? (isTelugu ? 'ఆపండి' : 'Stop') 
-        : (isTelugu ? 'వినండి' : 'Listen')),
+      label: Text(_isPlaying ? stopText : listenText),
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF1D9E75),
         foregroundColor: Colors.white,

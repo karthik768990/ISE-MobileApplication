@@ -21,6 +21,12 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
   late final DateTime _screenOpenTime;
   String _lang = 'en';
 
+  String _t(String en, String te, String hi) {
+    if (_lang == 'hi') return hi;
+    if (_lang == 'te') return te;
+    return en;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +42,7 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
         timeOnScreenMs: elapsed,
         audioPlayed: false,
         language: _lang,
+        showVisuals: false,
       ),
     ));
   }
@@ -49,7 +56,7 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          isTe ? 'ప్రిస్క్రిప్షన్' : 'Prescription',
+          _t('Prescription', 'ప్రిస్క్రిప్షన్', 'नुस्खा'),
           style: const TextStyle(color: Color(0xFF1A1A2E), fontWeight: FontWeight.bold, fontSize: 20),
         ),
         backgroundColor: Colors.white,
@@ -59,14 +66,23 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
-          // AppBar Language Switcher for perfect Condition B bilingual consistency
-          TextButton(
-            onPressed: () => setState(() => _lang = _lang == 'en' ? 'te' : 'en'),
-            child: Text(
-              _lang == 'en' ? 'తెలుగు' : 'English',
-              style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-          )
+          DropdownButton<String>(
+            value: _lang,
+            underline: const SizedBox(),
+            icon: const Icon(Icons.language, color: Color(0xFF1D9E75)),
+            style: const TextStyle(color: Color(0xFF1D9E75), fontWeight: FontWeight.bold, fontSize: 16),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() => _lang = newValue);
+              }
+            },
+            items: const [
+              DropdownMenuItem(value: 'en', child: Text('English')),
+              DropdownMenuItem(value: 'te', child: Text('తెలుగు')),
+              DropdownMenuItem(value: 'hi', child: Text('हिन्दी')),
+            ],
+          ),
+          const SizedBox(width: 8),
         ],
       ),
       body: Padding(
@@ -78,12 +94,12 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
               border: TableBorder.all(color: const Color(0xFFE0E0E0), width: 1.5, borderRadius: BorderRadius.circular(8)),
               columnWidths: const {0: FixedColumnWidth(110), 1: FlexColumnWidth()},
               children: [
-                _headerRow(isTe ? 'ఫీల్డ్' : 'Field', isTe ? 'వివరాలు' : 'Details'),
-                _dataRow(isTe ? 'మందు' : 'Medicine', isTe ? d.nameTe : d.name),
-                _dataRow(isTe ? 'మోతాదు' : 'Dose', isTe ? d.doseTe : d.dose),
-                _dataRow(isTe ? 'ఎలా వాడాలి' : 'Route', isTe ? d.routeTe : d.route),
-                _dataRow(isTe ? 'ఎంత తరచుగా' : 'Frequency', isTe ? d.frequencyTe : d.frequency),
-                _dataRow(isTe ? 'దేనికి వాడతారు' : 'Purpose', isTe ? d.purposeTe : d.purpose),
+                _headerRow(_t('Field', 'ఫీల్డ్', 'क्षेत्र'), _t('Details', 'వివరాలు', 'विवरण')),
+                _dataRow(_t('Medicine', 'మందు', 'दवा'), _t(d.name, d.nameTe, d.nameHi)),
+                _dataRow(_t('Dose', 'మోతాదు', 'खुराक'), _t(d.dose, d.doseTe, d.doseHi)),
+                _dataRow(_t('Route', 'ఎలా వాడాలి', 'उपयोग का तरीका'), _t(d.route, d.routeTe, d.routeHi)),
+                _dataRow(_t('Frequency', 'ఎంత తరచుగా', 'कितनी बार'), _t(d.frequency, d.frequencyTe, d.frequencyHi)),
+                _dataRow(_t('Purpose', 'దేనికి వాడతారు', 'उद्देश्य'), _t(d.purpose, d.purposeTe, d.purposeHi)),
               ],
             ),
             const Spacer(),
@@ -99,7 +115,7 @@ class _PlainTextConditionScreenState extends State<PlainTextConditionScreen> {
                   elevation: 2,
                 ),
                 child: Text(
-                  isTe ? 'ప్రశ్నలకు సమాధానం ఇవ్వండి' : 'Answer questions',
+                  _t('Answer questions', 'ప్రశ్నలకు సమాధానం ఇవ్వండి', 'सवालों के जवाब दें'),
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),

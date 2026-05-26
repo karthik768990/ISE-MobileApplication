@@ -213,7 +213,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
             boxShadow: selected
                 ? [
                     BoxShadow(
-                      color: activeColor.withOpacity(0.15),
+                      color: activeColor.withValues(alpha: 0.15),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     )
@@ -252,7 +252,7 @@ class _PatientEntryScreenState extends State<PatientEntryScreen> {
                   fontSize: 12,
                   height: 1.4,
                   fontWeight: FontWeight.w500,
-                  color: selected ? activeColor.withOpacity(0.85) : const Color(0xFF666666),
+                  color: selected ? activeColor.withValues(alpha: 0.85) : const Color(0xFF666666),
                 ),
               ),
             ],

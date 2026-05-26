@@ -174,18 +174,26 @@ void main() {
       setupMockChannels(tester);
       final drug = studyDrugs[1]; // Salbutamol
       await tester.pumpWidget(MaterialApp(
-        home: MedicationDetailScreen(drug: drug, initialLanguage: 'en'),
+        home: TickerMode(
+          enabled: false,
+          child: MedicationDetailScreen(drug: drug, initialLanguage: 'en'),
+        ),
       ));
 
       expect(find.byType(AnatomyViewer), findsOneWidget);
       expect(find.byType(AudioNarration), findsOneWidget);
       expect(find.byType(MedicationCard), findsOneWidget);
-      expect(find.text('తెలుగు'), findsOneWidget); // Default switcher button text
+      expect(find.text('English'), findsWidgets);
+
+      // Open Dropdown
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
 
       // Toggle Language to Telugu
-      await tester.tap(find.text('తెలుగు'));
-      await tester.pump();
-      expect(find.text('English'), findsOneWidget); // Toggle toggles text button label to English
+      await tester.tap(find.text('తెలుగు').last);
+      await tester.pumpAndSettle();
+      
+      expect(find.text('తెలుగు'), findsWidgets);
     });
 
     testWidgets('PlainTextConditionScreen renders simple data table', (WidgetTester tester) async {
@@ -211,24 +219,19 @@ void main() {
           timeOnScreenMs: 3000,
           audioPlayed: false,
           language: 'en',
+          showVisuals: true,
         ),
       ));
 
-      expect(find.text('What problem does this medicine help with?'), findsOneWidget);
+      expect(find.text(drug.questions[0].questionEn), findsOneWidget);
       
-      // Attempt to submit empty answer
-      await tester.tap(find.text('Submit Answer'));
-      await tester.pump();
-      expect(find.text('Please enter an answer'), findsOneWidget);
-
-      // Submit actual answer
-      await tester.enterText(find.byType(TextField), 'diabetes');
-      await tester.pump();
-      await tester.tap(find.text('Submit Answer'));
+      // Submit correct answer
+      final correctIndex = drug.questions[0].correctIndex;
+      await tester.tap(find.text(drug.questions[0].optionsEn[correctIndex]));
       await tester.pumpAndSettle();
 
       // Progresses to next question
-      expect(find.text('When or how often should you take this medicine?'), findsOneWidget);
+      expect(find.text(drug.questions[1].questionEn), findsOneWidget);
     });
   });
 }

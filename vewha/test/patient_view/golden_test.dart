@@ -50,7 +50,10 @@ void main() {
   group('Golden Visual Placement Verification', () {
     testWidgets('PatientEntryScreen golden rendering check', (WidgetTester tester) async {
       await tester.pumpWidget(const MaterialApp(
-        home: PatientEntryScreen(),
+        home: TickerMode(
+          enabled: false,
+          child: PatientEntryScreen(),
+        ),
       ));
       await tester.pumpAndSettle();
       
@@ -63,7 +66,10 @@ void main() {
       setupMockChannels(tester);
       final drug = studyDrugs[0]; // Metformin
       await tester.pumpWidget(MaterialApp(
-        home: MedicationDetailScreen(drug: drug),
+        home: TickerMode(
+          enabled: false,
+          child: MedicationDetailScreen(drug: drug),
+        ),
       ));
       await tester.pumpAndSettle();
 
@@ -73,7 +79,10 @@ void main() {
     testWidgets('PlainTextConditionScreen (Condition B) golden rendering check', (WidgetTester tester) async {
       final drug = studyDrugs[0]; // Metformin
       await tester.pumpWidget(MaterialApp(
-        home: PlainTextConditionScreen(drug: drug),
+        home: TickerMode(
+          enabled: false,
+          child: PlainTextConditionScreen(drug: drug),
+        ),
       ));
       await tester.pumpAndSettle();
 

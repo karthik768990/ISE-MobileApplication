@@ -199,6 +199,7 @@ class _ComprehensionScreenState extends State<ComprehensionScreen> {
                             bodySystem: widget.drug.bodySystem,
                             height: 180,
                             config: widget.drug.anatomyConfig,
+                            language: widget.language,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -245,30 +246,27 @@ class _ComprehensionScreenState extends State<ComprehensionScreen> {
               ...List.generate(options.length, (index) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: ElevatedButton(
-                    onPressed: () => _submitOption(index),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF8F9FA),
-                      foregroundColor: const Color(0xFF1A1A2E),
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.zero, // Remove internal padding
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        side: const BorderSide(color: Color(0xFFDEE2E6)),
-                      ),
-                      elevation: 0,
+                  child: Material(
+                    color: const Color(0xFFF8F9FA),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: const BorderSide(color: Color(0xFFDEE2E6)),
                     ),
-                    child: Container(
-                      width: double.infinity,
-                      constraints: const BoxConstraints(minHeight: 60),
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                      child: Text(
-                        options[index],
-                        style: const TextStyle(fontSize: 18, height: 1.4),
-                        softWrap: true,
-                        maxLines: null,
-                        textAlign: TextAlign.left,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: () => _submitOption(index),
+                      child: Container(
+                        width: double.infinity,
+                        constraints: const BoxConstraints(minHeight: 60),
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                        child: Text(
+                          options[index],
+                          style: const TextStyle(fontSize: 18, height: 1.4, color: Color(0xFF1A1A2E)),
+                          softWrap: true,
+                          maxLines: null,
+                          textAlign: TextAlign.left,
+                        ),
                       ),
                     ),
                   ),

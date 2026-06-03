@@ -21,6 +21,8 @@ class MechanismStep {
 class OrganTarget {
   final String id;
   final String name;
+  final String nameTe;
+  final String nameHi;
   final Offset normalizedPosition; 
   final Color highlightColor;
   final String effectType; 
@@ -28,6 +30,8 @@ class OrganTarget {
   const OrganTarget({
     required this.id,
     required this.name,
+    required this.nameTe,
+    required this.nameHi,
     required this.normalizedPosition,
     required this.highlightColor,
     this.effectType = 'pulse',
@@ -56,6 +60,8 @@ class AnatomyAnimationConfig {
   final List<AnimationPath> animationPaths;
   final Map<int, List<String>> narrationSyncPoints; // step index -> list of target/path IDs
   final String outcomeText;
+  final String outcomeTextTe;
+  final String outcomeTextHi;
   final Color outcomeColor;
 
   const AnatomyAnimationConfig({
@@ -64,6 +70,8 @@ class AnatomyAnimationConfig {
     this.animationPaths = const [],
     this.narrationSyncPoints = const {},
     this.outcomeText = '',
+    this.outcomeTextTe = '',
+    this.outcomeTextHi = '',
     this.outcomeColor = Colors.transparent,
   });
 }

@@ -121,19 +121,21 @@ class _MechanismAnimatorState extends State<MechanismAnimator> with SingleTicker
           children: [
             Icon(Icons.biotech_outlined, size: 18, color: widget.accentColor),
             const SizedBox(width: 6),
-            Text(
-              widget.language == 'te'
-                  ? 'మందు పని చేసే విధానం'
-                  : widget.language == 'hi'
-                      ? 'दवा काम करने का तरीका'
-                      : 'How this medicine works',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: widget.accentColor,
+            Expanded(
+              child: Text(
+                widget.language == 'te'
+                    ? 'మందు పని చేసే విధానం'
+                    : widget.language == 'hi'
+                        ? 'दवा काम करने का तरीका'
+                        : 'How this medicine works',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: widget.accentColor,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Spacer(),
             if (_completed)
               GestureDetector(
                 onTap: _startAnimation,
@@ -174,46 +176,48 @@ class _MechanismAnimatorState extends State<MechanismAnimator> with SingleTicker
                 return Expanded(
                   child: Row(
                     children: [
-                      // Step Icon Node
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              color: isActive ? widget.accentColor : const Color(0xFFE0E0E0),
-                              shape: BoxShape.circle,
-                              boxShadow: isCurrent
-                                  ? [
-                                      BoxShadow(
-                                        color: widget.accentColor.withAlpha((0.4 * 255).round()),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                      )
-                                    ]
-                                  : null,
-                            ),
-                            child: Center(
-                              child: Icon(
-                                stepConfig.icon,
-                                color: isActive ? Colors.white : const Color(0xFF888888),
-                                size: 22,
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: isActive ? widget.accentColor : const Color(0xFFE0E0E0),
+                                shape: BoxShape.circle,
+                                boxShadow: isCurrent
+                                    ? [
+                                        BoxShadow(
+                                          color: widget.accentColor.withAlpha((0.4 * 255).round()),
+                                          blurRadius: 10,
+                                          spreadRadius: 2,
+                                        )
+                                      ]
+                                    : null,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  stepConfig.icon,
+                                  color: isActive ? Colors.white : const Color(0xFF888888),
+                                  size: 22,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            _tStep(stepConfig),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: isActive ? const Color(0xFF1A1A2E) : const Color(0xFF888888),
-                              fontSize: 10,
-                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                            const SizedBox(height: 6),
+                            Text(
+                              _tStep(stepConfig),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: isActive ? const Color(0xFF1A1A2E) : const Color(0xFF888888),
+                                fontSize: 10,
+                                fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                              ),
+                              overflow: TextOverflow.visible,
                             ),
-                            overflow: TextOverflow.visible,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       
                       // Solid Connecting Progress Bar

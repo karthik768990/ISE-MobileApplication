@@ -98,8 +98,10 @@ class PictogramRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFB2EAD7)),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Wrap(
+        alignment: WrapAlignment.spaceEvenly,
+        spacing: 8,
+        runSpacing: 8,
         children: codes.map((code) => _buildPictogram(code)).toList(),
       ),
     );

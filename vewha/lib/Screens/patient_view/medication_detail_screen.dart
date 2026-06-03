@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../../data/prescriptions.dart';
 import '../../data/plain_language_map.dart';
 import '../../components/patient_view/anatomy_viewer.dart';
@@ -7,6 +8,7 @@ import '../../components/patient_view/audio_narration.dart';
 import '../../components/patient_view/medication_card.dart';
 import '../../components/patient_view/pictogram_row.dart';
 import '../../services/patient_tts_service.dart';
+import '../../logging/performance_tracker.dart';
 import 'comprehension_screen.dart';
 
 class MedicationDetailScreen extends StatefulWidget {
@@ -28,6 +30,7 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
   bool _audioPlayed = false;
   late final DateTime _screenOpenTime;
   final ValueNotifier<int> _activeStepNotifier = ValueNotifier<int>(-1);
+  Timer? _autoPlayTimer;
 
   String _t(String en, String te, String hi) {
     if (_lang == 'hi') return hi;
@@ -40,10 +43,32 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
     super.initState();
     _lang = widget.initialLanguage;
     _screenOpenTime = DateTime.now();
+    PatientModuleRegistry.isTtsInitialized = true;
+    PatientModuleRegistry.isSvgInitialized = true;
+    _startAutoPlay();
+  }
+
+  void _startAutoPlay() {
+    _autoPlayTimer = Timer(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      _activeStepNotifier.value = 0;
+      _autoPlayTimer = Timer.periodic(const Duration(milliseconds: 2500), (timer) {
+        if (!mounted || _audioPlayed) {
+          timer.cancel();
+          return;
+        }
+        if (_activeStepNotifier.value < _entry.mechanismSteps.length - 1) {
+          _activeStepNotifier.value++;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
   }
 
   @override
   void dispose() {
+    _autoPlayTimer?.cancel();
     PatientTtsService().stop();
     _activeStepNotifier.dispose();
     super.dispose();

@@ -198,7 +198,7 @@ class _ComprehensionScreenState extends State<ComprehensionScreen> {
                           child: AnatomyViewer(
                             bodySystem: widget.drug.bodySystem,
                             height: 180,
-                            drugKey: widget.drug.plainLanguageKey,
+                            config: widget.drug.anatomyConfig,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -251,24 +251,25 @@ class _ComprehensionScreenState extends State<ComprehensionScreen> {
                       backgroundColor: const Color(0xFFF8F9FA),
                       foregroundColor: const Color(0xFF1A1A2E),
                       alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      padding: EdgeInsets.zero, // Remove internal padding
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                         side: const BorderSide(color: Color(0xFFDEE2E6)),
                       ),
                       elevation: 0,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            options[index],
-                            style: const TextStyle(fontSize: 18),
-                            softWrap: true,
-                            maxLines: null,
-                          ),
-                        ),
-                      ],
+                    child: Container(
+                      width: double.infinity,
+                      constraints: const BoxConstraints(minHeight: 60),
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                      child: Text(
+                        options[index],
+                        style: const TextStyle(fontSize: 18, height: 1.4),
+                        softWrap: true,
+                        maxLines: null,
+                        textAlign: TextAlign.left,
+                      ),
                     ),
                   ),
                 );

@@ -115,15 +115,16 @@ class _MedicationDetailScreenState extends State<MedicationDetailScreen> {
             Center(
               child: AnatomyViewer(
                 bodySystem: widget.drug.bodySystem,
-                height: MediaQuery.of(context).size.height * 0.40, // Expanded height 40%
-                drugKey: widget.drug.plainLanguageKey,
+                height: MediaQuery.of(context).size.height * 0.40,
+                config: widget.drug.anatomyConfig,
+                activeStepNotifier: _activeStepNotifier,
               ),
             ),
             const SizedBox(height: 16),
             
             // Mechanism Animator (Visual + Text) synchronized
             MechanismAnimator(
-              drugKey: widget.drug.plainLanguageKey,
+              storyboardSteps: widget.drug.anatomyConfig.storyboardSteps,
               steps: _entry.mechanismSteps,
               language: _lang,
               activeStepNotifier: _activeStepNotifier,

@@ -1,6 +1,9 @@
 // lib/data/prescriptions.dart
 // Static study prescription set — no network, no Firebase.
 
+import 'package:flutter/material.dart';
+import 'anatomy_config.dart';
+
 enum BodySystem {
   endocrine,      // Metformin — pancreas/liver
   respiratory,    // Salbutamol — bronchi/lungs
@@ -8,6 +11,7 @@ enum BodySystem {
   cardiovascular, // Amlodipine — heart/vessels
   systemic,       // Prednisolone — adrenal/immune (non-obvious probe)
 }
+
 
 class McqQuestion {
   final String id;
@@ -51,6 +55,7 @@ class StudyDrug {
   final BodySystem bodySystem;
   final String plainLanguageKey;
   final bool isNonObvious;
+  final AnatomyAnimationConfig anatomyConfig;
   final List<McqQuestion> questions;
 
   const StudyDrug({
@@ -73,6 +78,7 @@ class StudyDrug {
     required this.bodySystem,
     required this.plainLanguageKey,
     required this.isNonObvious,
+    required this.anatomyConfig,
     required this.questions,
   });
 }
@@ -98,6 +104,30 @@ const List<StudyDrug> studyDrugs = [
     bodySystem: BodySystem.endocrine,
     plainLanguageKey: 'metformin_01',
     isNonObvious: false,
+    anatomyConfig: const AnatomyAnimationConfig(
+      storyboardSteps: [
+        MechanismStep(titleEn: 'Tablet', titleTe: 'మాత్ర', titleHi: 'गोली', icon: Icons.medication, organTargetId: 'stomach', animationTrigger: 'start'),
+        MechanismStep(titleEn: 'Liver', titleTe: 'కాలేయం', titleHi: 'जिगर', icon: Icons.bloodtype, organTargetId: 'liver', animationTrigger: 'move'),
+        MechanismStep(titleEn: 'Action', titleTe: 'చర్య', titleHi: 'कार्रवाई', icon: Icons.bolt, organTargetId: 'liver', animationTrigger: 'effect'),
+        MechanismStep(titleEn: 'Reduced Sugar', titleTe: 'తగ్గిన చక్కెర', titleHi: 'कम शर्करा', icon: Icons.trending_down, organTargetId: 'outcome', animationTrigger: 'outcome'),
+      ],
+      organTargets: [
+        OrganTarget(id: 'stomach', name: 'Stomach', normalizedPosition: Offset(0.55, 0.4), highlightColor: Colors.orange),
+        OrganTarget(id: 'liver', name: 'Liver', normalizedPosition: Offset(0.45, 0.35), highlightColor: Colors.red),
+      ],
+      animationPaths: [
+        AnimationPath(id: 'path1', startNormalized: Offset(0.5, 0.1), endNormalized: Offset(0.55, 0.4), color: Colors.blue),
+        AnimationPath(id: 'path2', startNormalized: Offset(0.55, 0.4), endNormalized: Offset(0.45, 0.35), color: Colors.red),
+      ],
+      narrationSyncPoints: {
+        0: ['stomach', 'path1'],
+        1: ['liver', 'path2'],
+        2: ['liver'],
+        3: ['outcome'],
+      },
+      outcomeText: 'Glucose ↓',
+      outcomeColor: Colors.green,
+    ),
     questions: [
       McqQuestion(
         id: 'q_purpose',
@@ -181,6 +211,29 @@ const List<StudyDrug> studyDrugs = [
     bodySystem: BodySystem.respiratory,
     plainLanguageKey: 'salbutamol_01',
     isNonObvious: false,
+    anatomyConfig: const AnatomyAnimationConfig(
+      storyboardSteps: [
+        MechanismStep(titleEn: 'Inhaler', titleTe: 'ఇన్హేలర్', titleHi: 'इनहेलर', icon: Icons.air, organTargetId: 'mouth', animationTrigger: 'start'),
+        MechanismStep(titleEn: 'Lungs', titleTe: 'ఊపిరితిత్తులు', titleHi: 'फेफड़े', icon: Icons.masks, organTargetId: 'lungs', animationTrigger: 'move'),
+        MechanismStep(titleEn: 'Airways', titleTe: 'శ్వాసనాళాలు', titleHi: 'वायुमार्ग', icon: Icons.bubble_chart, organTargetId: 'airways', animationTrigger: 'effect'),
+        MechanismStep(titleEn: 'Breathe Easy', titleTe: 'సులభంగా శ్వాస', titleHi: 'आसान सांस', icon: Icons.sentiment_very_satisfied, organTargetId: 'outcome', animationTrigger: 'outcome'),
+      ],
+      organTargets: [
+        OrganTarget(id: 'mouth', name: 'Mouth', normalizedPosition: Offset(0.5, 0.15), highlightColor: Colors.lightBlue),
+        OrganTarget(id: 'lungs', name: 'Lungs', normalizedPosition: Offset(0.5, 0.35), highlightColor: Colors.blue),
+      ],
+      animationPaths: [
+        AnimationPath(id: 'path1', startNormalized: Offset(0.5, 0.15), endNormalized: Offset(0.5, 0.35), color: Colors.lightBlue),
+      ],
+      narrationSyncPoints: {
+        0: ['mouth'],
+        1: ['lungs', 'path1'],
+        2: ['lungs'],
+        3: ['outcome'],
+      },
+      outcomeText: 'Airways Open',
+      outcomeColor: Colors.blueAccent,
+    ),
     questions: [
       McqQuestion(
         id: 'q_purpose',
@@ -264,6 +317,28 @@ const List<StudyDrug> studyDrugs = [
     bodySystem: BodySystem.integumentary,
     plainLanguageKey: 'betamethasone_01',
     isNonObvious: false,
+    anatomyConfig: const AnatomyAnimationConfig(
+      storyboardSteps: [
+        MechanismStep(titleEn: 'Cream', titleTe: 'క్రీమ్', titleHi: 'क्रीम', icon: Icons.clean_hands, organTargetId: 'skin', animationTrigger: 'start'),
+        MechanismStep(titleEn: 'Absorb', titleTe: 'ఇంకుతుంది', titleHi: 'अवशोषित', icon: Icons.back_hand, organTargetId: 'skin', animationTrigger: 'move'),
+        MechanismStep(titleEn: 'Reduce Chemicals', titleTe: 'రసాయనాలు తగ్గింపు', titleHi: 'रसायन कम', icon: Icons.science, organTargetId: 'skin', animationTrigger: 'effect'),
+        MechanismStep(titleEn: 'Calm Skin', titleTe: 'ప్రశాంత చర్మం', titleHi: 'शांत त्वचा', icon: Icons.health_and_safety, organTargetId: 'outcome', animationTrigger: 'outcome'),
+      ],
+      organTargets: [
+        OrganTarget(id: 'skin', name: 'Skin', normalizedPosition: Offset(0.7, 0.5), highlightColor: Colors.pink),
+      ],
+      animationPaths: [
+        AnimationPath(id: 'path1', startNormalized: Offset(0.8, 0.5), endNormalized: Offset(0.7, 0.5), color: Colors.white),
+      ],
+      narrationSyncPoints: {
+        0: ['skin'],
+        1: ['skin', 'path1'],
+        2: ['skin'],
+        3: ['outcome'],
+      },
+      outcomeText: 'Itch ↓',
+      outcomeColor: Colors.pinkAccent,
+    ),
     questions: [
       McqQuestion(
         id: 'q_purpose',
@@ -347,6 +422,29 @@ const List<StudyDrug> studyDrugs = [
     bodySystem: BodySystem.cardiovascular,
     plainLanguageKey: 'amlodipine_01',
     isNonObvious: false,
+    anatomyConfig: const AnatomyAnimationConfig(
+      storyboardSteps: [
+        MechanismStep(titleEn: 'Tablet', titleTe: 'మాత్ర', titleHi: 'गोली', icon: Icons.medication, organTargetId: 'bloodstream', animationTrigger: 'start'),
+        MechanismStep(titleEn: 'Vessels', titleTe: 'రక్తనాళాలు', titleHi: 'वाहिकाएं', icon: Icons.linear_scale, organTargetId: 'vessels', animationTrigger: 'move'),
+        MechanismStep(titleEn: 'Widen', titleTe: 'వెడల్పు', titleHi: 'चौड़ा', icon: Icons.zoom_out_map, organTargetId: 'vessels', animationTrigger: 'effect'),
+        MechanismStep(titleEn: 'BP ↓', titleTe: 'బీపీ ↓', titleHi: 'बीपी ↓', icon: Icons.trending_down, organTargetId: 'outcome', animationTrigger: 'outcome'),
+      ],
+      organTargets: [
+        OrganTarget(id: 'bloodstream', name: 'Bloodstream', normalizedPosition: Offset(0.5, 0.5), highlightColor: Colors.redAccent),
+        OrganTarget(id: 'vessels', name: 'Vessels', normalizedPosition: Offset(0.3, 0.6), highlightColor: Colors.red),
+      ],
+      animationPaths: [
+        AnimationPath(id: 'path1', startNormalized: Offset(0.5, 0.5), endNormalized: Offset(0.3, 0.6), color: Colors.redAccent),
+      ],
+      narrationSyncPoints: {
+        0: ['bloodstream'],
+        1: ['vessels', 'path1'],
+        2: ['vessels'],
+        3: ['outcome'],
+      },
+      outcomeText: 'BP ↓',
+      outcomeColor: Colors.green,
+    ),
     questions: [
       McqQuestion(
         id: 'q_purpose',
@@ -430,6 +528,29 @@ const List<StudyDrug> studyDrugs = [
     bodySystem: BodySystem.systemic,
     plainLanguageKey: 'prednisolone_01',
     isNonObvious: true,
+    anatomyConfig: AnatomyAnimationConfig(
+      storyboardSteps: [
+        MechanismStep(titleEn: 'Tablet', titleTe: 'మాత్ర', titleHi: 'गोली', icon: Icons.medication, organTargetId: 'bloodstream', animationTrigger: 'start'),
+        MechanismStep(titleEn: 'Whole Body', titleTe: 'మొత్తం శరీరం', titleHi: 'पूरा शरीर', icon: Icons.accessibility_new, organTargetId: 'body', animationTrigger: 'move'),
+        MechanismStep(titleEn: 'Immune System', titleTe: 'రోగనిరోధక వ్యవస్థ', titleHi: 'प्रतिरक्षा प्रणाली', icon: Icons.shield, organTargetId: 'immune', animationTrigger: 'effect'),
+        MechanismStep(titleEn: 'Healing', titleTe: 'నయం', titleHi: 'उपचार', icon: Icons.healing, organTargetId: 'outcome', animationTrigger: 'outcome'),
+      ],
+      organTargets: [
+        OrganTarget(id: 'bloodstream', name: 'Bloodstream', normalizedPosition: Offset(0.5, 0.5), highlightColor: Colors.redAccent),
+        OrganTarget(id: 'body', name: 'Body', normalizedPosition: Offset(0.5, 0.4), highlightColor: Colors.orange),
+      ],
+      animationPaths: [
+        AnimationPath(id: 'path1', startNormalized: Offset(0.5, 0.5), endNormalized: Offset(0.5, 0.4), color: Colors.orange),
+      ],
+      narrationSyncPoints: {
+        0: ['bloodstream'],
+        1: ['body', 'path1'],
+        2: ['body'],
+        3: ['outcome'],
+      },
+      outcomeText: 'Inflammation ↓',
+      outcomeColor: Colors.green,
+    ),
     questions: [
       McqQuestion(
         id: 'q_purpose',

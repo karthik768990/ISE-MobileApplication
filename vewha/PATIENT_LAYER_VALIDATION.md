@@ -61,11 +61,13 @@ Follow this checklist during manual runs to ensure split and logging validity:
 ### Step 2: Test Condition A (Pictures + Voice Guidance)
 - [ ] Verify that Medication 1 renders.
 - [ ] Verify that the stepper dot indicator highlights step 1.
-- [ ] Verify that the anatomy diagram is loaded and occupies ~40% of the screen height with high-contrast overlays.
+- [ ] Verify that the anatomy diagram is loaded (using dynamic video model) and occupies ~40% of the screen height with high-contrast custom organ overlays.
 - [ ] Verify that the visual mechanism animation and text steps are present below the anatomy diagram.
+- [ ] Verify that the generic organ icons have been removed from the storyboard and replaced by clear step numbers, and the connector uses a solid progress bar instead of a bouncing dot.
 - [ ] Tap the **Language Toggle** (English/తెలుగు/हिन्दी) and verify the text fields, visual overlays, and clinical values change languages.
 - [ ] Tap **Listen** and verify consolidated audio voice speaks clearly. Verify that as the audio plays, the mechanism animation steps and visual highlights synchronize precisely with the spoken words.
-- [ ] Tap **Answer questions about this medicine**, submit answers to the 6 high-value quiz questions, and verify that recovery views render with matching overlays.
+- [ ] Tap **Answer questions about this medicine**, submit answers to the 6 high-value quiz questions.
+- [ ] Verify the MCQ answer buttons do not clip text when displaying long translated sentences.
 
 ### Step 3: Test Condition B (Basic Text Instructions)
 - [ ] Exit the session, start a new one, and select **Basic Text Table**. Click **Launch Study**.
@@ -86,10 +88,10 @@ Follow this checklist during manual runs to ensure split and logging validity:
    - Implements `speakChunked` for precise, step-by-step narration synchronized with `MechanismAnimator` visual text nodes, providing unified multimodal learning.
 
 2. **Expanded Physiology Overlays (`AnatomyViewer`)**
-   - Scaled to 40% screen height with high-contrast alphas to clearly explain active drug mechanisms visually (e.g., stomach-to-liver paths) directly on the diagram.
+   - Scaled to 40% screen height with high-contrast alphas to clearly explain active drug mechanisms visually (e.g., stomach-to-liver paths) directly on the dynamic video model.
 
 3. **Robust Test Suite**
    - Comprehensive automated testing (UI, accessibility, and performance) ensuring high stability.
 
 4. **Hardened Option Selectors**
-   - Clean auto-wrapping and flexible heights prevent clipping in English, Hindi, and Telugu on small devices.
+   - Clean auto-wrapping and flexible heights prevent clipping in English, Hindi, and Telugu on small devices, using unrestricted vertical containers.
